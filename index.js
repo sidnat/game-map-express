@@ -7,7 +7,6 @@ const db = require('./services/db');
 var cors = require('cors')
 
 app.use(cors())
-// install nodemon
 
 var corsOptions = {
   // origin: 'http://10.0.0.116:3000',
