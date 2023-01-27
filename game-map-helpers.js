@@ -53,9 +53,22 @@ const getPinsWithMapID = async (mapID) => {
     })
 }
 
+const getMapAndPins = async (uuid) => {
+  const map = await getMap(uuid)
+  const pins = await getPinsWithMapID(uuid)
+
+  console.log('map', map)
+  console.log('pins', pins)
+  
+  if (map && pins) {
+    return {map, pins}
+  }
+}
+
 module.exports = {
   addMap,
   getMap,
   addPin,
-  getPinsWithMapID
+  getPinsWithMapID,
+  getMapAndPins
 }
