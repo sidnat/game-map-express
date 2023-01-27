@@ -5,7 +5,13 @@ const bodyParser = require('body-parser').json()
 const { v4: uuidv4 } = require('uuid');
 const db = require('./services/db');
 var cors = require('cors')
-const { addMap, getMap, addPin, getPinsWithMapID } = require('./game-map-helpers')
+const { 
+  addMap,
+  getMap,
+  addPin,
+  getPinsWithMapID,
+  getMapAndPins
+} = require('./game-map-helpers')
 app.use(cors())
 
 var corsOptions = {
@@ -79,6 +85,34 @@ app.get("/getPin", async (req, res) => {
   //     screenshot: 'https://static01.nyt.com/images/2018/11/25/opinion/25SUDERMAN/25SUDERMAN-superJumbo.jpg?quality=75&auto=webp'
   //   }
   // ]
+})
+
+app.get("/getMapAndPins", async (req, res) => {
+  console.log('query', req.query.uuid)
+  const mapAndPins = await getMapAndPins(req.query.uuid)
+  res.send(mapAndPins)
+
+  // {
+  //   map: {
+  //     id: '184b9f7a-91c2-48ab-953c-b0e3182f7280',
+  //     map_name: 'rdr2',
+  //     creator: 'dindang',
+  //     image_link: 'www.google.com'
+  //   },
+  //   pins: [
+  //     {
+  //       id: 0,
+  //       map_id: 184,
+  //       x_coordinate: 10,
+  //       y_coordinate: 10,
+  //       colour: '29f0ad',
+  //       title: 'come back for treasure',
+  //       note: '2023-01-24 16:42:32',
+  //       timestamp: Invalid Date,
+  //       screenshot: 'https://static01.nyt.com/images/2018/11/25/opinion/25SUDERMAN/25SUDERMAN-superJumbo.jpg?quality=75&auto=webp'
+  //     }
+  //   ]
+  // }
 })
 
 app.get('/', (req, res) => {
