@@ -24,7 +24,6 @@ const getMap = async (uuid) => {
 
   return await db.query(queryString)
     .then((res) => {
-      // console.log('res', res[0])
       if (res[0]) {
         return res[0]
       }
@@ -41,7 +40,6 @@ const getPinsWithMapID = async (mapID) => {
 
   return await db.query(queryString)
     .then((res) => {
-      // console.log(res)
       if (res[0]) {
         return res
       }
@@ -60,7 +58,7 @@ const getMapAndPins = async (uuid) => {
   console.log('map', map)
   console.log('pins', pins)
   
-  if (map && pins) {
+  if (map) {
     return {map, pins}
   }
 }
