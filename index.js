@@ -120,7 +120,7 @@ app.put('/movePin', (req, res) => {
 })
 
 app.get('/', (req, res) => {
-  return "hello world"
+  res.send("hello world")
 })
 
 app.listen(port, () => {
