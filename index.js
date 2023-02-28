@@ -25,14 +25,17 @@ var corsOptions = {
   optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
 }
 
-app.post('/addMap', [bodyParser, cors(corsOptions)], (req, res) => {
+app.post('/addMap', [bodyParser, cors(corsOptions)], async (req, res) => {
   // console.log(req.body)
   const id = req.body.id;
   const mapName = req.body.mapName;
   const creator = req.body.creator;
   const imageLink = req.body.imageLink;
 
-  addMap(id, mapName, creator, imageLink)
+  
+  if (await addMap(id, mapName, creator, imageLink)) {
+    res.redirect(`https://game-map-react.vercel.app/${id}`)
+  }
   //get mapname, creator, image link from req.body
   //generate uuid
   //save to sql using guid as key

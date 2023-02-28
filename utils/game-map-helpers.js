@@ -4,6 +4,9 @@ const addMap = (uuid, mapName, creator, imageLink) => {
   const queryString = `INSERT INTO maps (id, map_name, creator, image_link) VALUES ("${uuid}", "${mapName}", "${creator}", "${imageLink}");`;
 
   return db.query(queryString)
+    .then((res) => {
+      return true
+    })
     .catch((error) => {
       console.log(error);
     });
