@@ -20,7 +20,8 @@ app.use(cors())
 
 var corsOptions = {
   // origin: 'http://10.0.0.116:3000',
-  origin: 'http://localhost:3000',
+  // origin: 'http://localhost:3000',
+  origin: 'https://game-map-react.vercel.app/',
   optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
 }
 
@@ -36,7 +37,7 @@ app.post('/addMap', [bodyParser, cors(corsOptions)], (req, res) => {
   //generate uuid
   //save to sql using guid as key
   // res.send(uuid)
-  res.redirect(`localhost:3000/${id}`)
+  res.redirect(`https://game-map-react.vercel.app/${id}`)
 })
 
 app.post('/addCategory', [bodyParser, cors(corsOptions)], (req, res) => {
