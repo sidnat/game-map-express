@@ -2,50 +2,65 @@ const express = require('express')
 const app = express()
 const port = 3003
 const bodyParser = require('body-parser').json()
-const { v4: uuidv4 } = require('uuid');
 const db = require('./services/db');
 var cors = require('cors')
-const { 
+const {
   addMap,
-  getMap,
+  addCategory,
   addPin,
+  getMap,
   getPinsWithMapID,
-  getMapAndPins
-} = require('./game-map-helpers')
+  getMapPinsCategories,
+  deletePin,
+  deleteCategory,
+  editPin,
+  movePin
+} = require('./utils/game-map-helpers')
 app.use(cors())
 
 var corsOptions = {
   // origin: 'http://10.0.0.116:3000',
-  // optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+  origin: 'http://localhost:3000',
+  optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
 }
 
 app.post('/addMap', [bodyParser, cors(corsOptions)], (req, res) => {
-  console.log(req.body)
-  const uuid = uuidv4();
+  // console.log(req.body)
+  const id = req.body.id;
   const mapName = req.body.mapName;
   const creator = req.body.creator;
   const imageLink = req.body.imageLink;
 
-  addMap(uuid, mapName, creator, imageLink)
+  addMap(id, mapName, creator, imageLink)
   //get mapname, creator, image link from req.body
   //generate uuid
   //save to sql using guid as key
+  // res.send(uuid)
+  res.redirect(`localhost:3000/${id}`)
+})
+
+app.post('/addCategory', [bodyParser, cors(corsOptions)], (req, res) => {
+  const mapID = req.body.mapID
+  const label = req.body.label
+  const colour = req.body.colour
+
+  addCategory(mapID, label, colour)
   res.send()
 })
 
 app.post('/addPin', [bodyParser, cors(corsOptions)], (req, res) => {
-  console.log(req.body)
-  const uuid = uuidv4();
+  // console.log(req.body)
+  const id = req.body.id;
   const mapID = req.body.mapID;
   const xCoordinate = req.body.xCoordinate;
   const yCoordinate = req.body.yCoordinate;
-  const colour = req.body.colour;
-  const timestamp = req.body.timestamp; //YYYY-MM-DD HH:MI:SS
+  const category = req.body.category;
+  const time = req.body.time;
   const title = req.body.title;
   const note = req.body.note;
-  const screenshot = req.body.screenshot;
+  const screenshot = req.body.screenshot || null;
 
-  addPin(uuid, mapID, xCoordinate, yCoordinate, colour, timestamp, title, note, screenshot)
+  addPin(id, mapID, xCoordinate, yCoordinate, category, time, title, note, screenshot)
   res.send()
 })
 
@@ -54,15 +69,8 @@ app.get("/getMap", async (req, res) => {
   // console.log(req.query)
   // console.log(getMap(req.params.uuid))
   const map = await getMap(req.query.uuid)
-  console.log('map', map)
+  // console.log('map', map)
   res.send(map)
-
-  // {
-  //   id: '184b9f7a-91c2-48ab-953c-b0e3182f7280',
-  //   map_name: 'rdr2',
-  //   creator: 'dindang',
-  //   image_link: 'www.google.com'
-  // }
 })
 
 app.get("/getPin", async (req, res) => {
@@ -71,52 +79,43 @@ app.get("/getPin", async (req, res) => {
   // console.log(getMap(req.params.uuid))
   const pins = await getPinsWithMapID(req.query.mapID)
   res.send(pins)
-
-  // [
-  //   {
-  //     id: 0,
-  //     map_id: 184,
-  //     x_coordinate: 10,
-  //     y_coordinate: 10,
-  //     colour: '29f0ad',
-  //     title: 'come back for treasure',
-  //     note: '2023-01-24 16:42:32',
-  //     timestamp: Invalid Date,
-  //     screenshot: 'https://static01.nyt.com/images/2018/11/25/opinion/25SUDERMAN/25SUDERMAN-superJumbo.jpg?quality=75&auto=webp'
-  //   }
-  // ]
 })
 
-app.get("/getMapAndPins", async (req, res) => {
-  console.log('query', req.query.uuid)
-  const mapAndPins = await getMapAndPins(req.query.uuid)
-  res.send(mapAndPins)
-
-  // {
-  //   map: {
-  //     id: '184b9f7a-91c2-48ab-953c-b0e3182f7280',
-  //     map_name: 'rdr2',
-  //     creator: 'dindang',
-  //     image_link: 'www.google.com'
-  //   },
-  //   pins: [
-  //     {
-  //       id: 0,
-  //       map_id: 184,
-  //       x_coordinate: 10,
-  //       y_coordinate: 10,
-  //       colour: '29f0ad',
-  //       title: 'come back for treasure',
-  //       note: '2023-01-24 16:42:32',
-  //       timestamp: Invalid Date,
-  //       screenshot: 'https://static01.nyt.com/images/2018/11/25/opinion/25SUDERMAN/25SUDERMAN-superJumbo.jpg?quality=75&auto=webp'
-  //     }
-  //   ]
-  // }
+app.get("/getMapPinsCategories", async (req, res) => {
+  // console.log('query', req.query.uuid)
+  const mapPinsCategories = await getMapPinsCategories(req.query.uuid)
+  res.send(mapPinsCategories)
 })
 
-app.get('/', (req, res) => {
-  res.send('Hello World!')
+app.delete('/deletePin',  (req, res) => {
+  deletePin(req.query.id)
+  res.send()
+})
+
+app.put('/editPin', [bodyParser, cors(corsOptions)], (req, res) => {
+  const id = req.body.id;
+  const category = req.body.category;
+  const time = req.body.time;
+  const title = req.body.title;
+  const note = req.body.note;
+  // const screenshot = req.body.screenshot;
+  
+  editPin(id, category, time, title, note)
+  res.send()
+})
+
+app.delete('/deleteCategory', (req, res) => {
+  deleteCategory(req.query.id)
+  res.send()
+})
+
+app.put('/movePin', (req, res) => {
+  const id = req.body.id
+  const xCoordinate = req.body.xCoordinate
+  const yCoordinate = req.body.yCoordinate
+  
+  movePin(id, xCoordinate, yCoordinate)
+  res.send()
 })
 
 app.listen(port, () => {
