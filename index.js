@@ -119,6 +119,10 @@ app.put('/movePin', (req, res) => {
   res.send()
 })
 
+app.get('/', (req, res) => {
+  return "hello world"
+})
+
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
