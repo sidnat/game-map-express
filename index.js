@@ -18,11 +18,17 @@ const {
 } = require('./utils/game-map-helpers')
 app.use(cors())
 
+var whitelist = ['http://10.0.0.116:3000', 'http://localhost:3000', 'https://game-map-react.vercel.app/']
+
 var corsOptions = {
-  // origin: 'http://10.0.0.116:3000',
-  // origin: 'http://localhost:3000',
-  origin: 'https://game-map-react.vercel.app/',
-  optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+  origin: function (origin, callback) {
+    if (whitelist.indexOf(origin) !== -1) {
+      callback(null, true)
+    } else {
+      callback(new Error('Not allowed by CORS'))
+    }
+  },
+  optionsSuccessStatus: 200 
 }
 
 app.post('/addMap', [bodyParser, cors(corsOptions)], async (req, res) => {
