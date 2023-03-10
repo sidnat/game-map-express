@@ -5,7 +5,7 @@ const addMap = (uuid, mapName, creator, imageLink) => {
 
   return db.query(queryString)
     .then((res) => {
-      return true
+      console.log('added map')
     })
     .catch((error) => {
       console.log(error);
