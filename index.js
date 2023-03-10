@@ -2,7 +2,6 @@ const express = require('express')
 const app = express()
 const port = 3003
 const bodyParser = require('body-parser').json()
-const db = require('./services/db');
 var cors = require('cors')
 const {
   addMap,
@@ -31,22 +30,26 @@ var corsOptions = {
   optionsSuccessStatus: 200 
 }
 
-app.post('/addMap', [bodyParser, cors(corsOptions)], async (req, res) => {
+app.post('/addMap', [bodyParser, cors(corsOptions)], (req, res) => {
   // console.log(req.body)
   const id = req.body.id;
   const mapName = req.body.mapName;
   const creator = req.body.creator;
   const imageLink = req.body.imageLink;
 
+  addMap(id, mapName, creator, imageLink)
+
   
-  if (await addMap(id, mapName, creator, imageLink)) {
-    res.redirect(`https://game-map-react.vercel.app/${id}`)
-  }
+  // if (await addMap(id, mapName, creator, imageLink)) {
+    // console.log('yay')
+    // res.redirect(`http://localhost:3000/${id}`)
+    // res.redirect(`https://game-map-react.vercel.app/${id}`)
+  // }
   //get mapname, creator, image link from req.body
   //generate uuid
   //save to sql using guid as key
   // res.send(uuid)
-  res.redirect(`https://game-map-react.vercel.app/${id}`)
+  // res.redirect(`https://game-map-react.vercel.app/${id}`)
 })
 
 app.post('/addCategory', [bodyParser, cors(corsOptions)], (req, res) => {
